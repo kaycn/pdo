@@ -8,7 +8,9 @@
 
 /*
   *
-  * PDO mysql类，操作 版本1.0
+  * PDO mysql类，操作 版本2.0
+ *
+ * 增加事务功能
   *
   * */
 
@@ -43,6 +45,40 @@ class Pdodome{
         }
 
         file_put_contents($handle, $err . "\n", FILE_APPEND);
+    }
+    //事务功能
+
+    protected function train(){
+        try {
+            //连接数据库
+            $pdo = $this -> connect();
+            //关闭自动提交
+            $pdo -> setAttribute(PDO::ATTR_AUTOCOMMIT, 0);
+            //开启事务处理
+            $pdo -> beginTransaction();
+
+            /*
+             * 在此添加sql语句执行
+             * */
+
+            //提交以上操作
+
+            $pdo -> commit();
+
+            // 写入日志
+
+            $this -> log();
+
+
+        }catch (PDOException $e){
+
+            $this -> log($e);
+
+            //
+
+        }
+
+
     }
 
     public function exe(){
